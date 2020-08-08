@@ -70,4 +70,14 @@ router.post('/login', async(req, res, next) =>{
         next(err)
     }
 })
+
+router.get("/logout", async (req, res, next)=>{
+    try{
+        req.session.destroy((err) =>{
+           err ? next(err) : res.status(204).end()
+        })
+    } catch (err){
+        next(err)
+    }
+})
 module.exports = router;
