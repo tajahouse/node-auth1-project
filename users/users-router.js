@@ -44,4 +44,30 @@ router.post('/users', async(req, res, next) =>{
         next (err)
     }
 })
+
+router.post('/login', async(req, res, next) =>{
+    try{
+        const { username, password } = req.body
+        const user = await Users.findBy({ username }).first()
+
+        if(!user){
+            return res.status(401).json({
+                message: `Wrong username and password`
+            })
+        }
+
+        const payload = {
+            userId: user.id,
+            username: user.username,
+            userRole: 'normal'
+        }
+
+        res.cookie('token', jwt.sign(payload, process.env.JWT_SECRET))
+        res.json({
+            message: `You said the magic word ${user.username}!`
+        })
+    } catch (err){
+        next(err)
+    }
+})
 module.exports = router;
